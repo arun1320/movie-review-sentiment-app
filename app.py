@@ -32,36 +32,28 @@ if st.button("Analyze Sentiment"):
         tokenizer, model = load_model(model_name)
 
         # Inference
-        start = time.time()
         inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
         with torch.no_grad():
             outputs = model(**inputs)
-        end = time.time()
 
         probs = torch.nn.functional.softmax(outputs.logits, dim=1)
         pred_class = torch.argmax(probs).item()
         confidence = probs[0][pred_class].item()
 
-        # Sentiment Labels mapping
-        if "sst2" in model_name.lower():
-            labels = ["Negative", "Positive"]
-        else:
-            labels = ["Negative", "Neutral", "Positive"]
-
-        sentiment = labels[pred_class]
+        # Use Good/Bad instead of Positive/Negative
+        labels = ["Bad", "Good"]
+        sentiment = labels[pred_class if pred_class < 2 else 1]  # Default to "Good" if out of range
 
         # Emoji Mapping
         emojis = {
-            "Negative": "😞",
-            "Neutral": "😐",
-            "Positive": "😊"
+            "Bad": "👎",
+            "Good": "👍"
         }
 
         # Sentiment color coding
         sentiment_color = {
-            "Negative": "#ff4b4b",   # red
-            "Neutral": "#ffcc00",    # yellow
-            "Positive": "#2ecc71"    # green
+            "Bad": "#ff4b4b",   # red
+            "Good": "#2ecc71"   # green
         }
 
         # Output Display with color styling
@@ -73,9 +65,6 @@ if st.button("Analyze Sentiment"):
                 </h4>
                 <p style='color:#3366cc; font-size:16px;'>
                     Confidence: {confidence * 100:.2f}%
-                </p>
-                <p style='color:#8e44ad; font-size:16px;'>
-                    Inference Time: {end - start:.2f} seconds
                 </p>
             </div>""",
             unsafe_allow_html=True

@@ -13,8 +13,8 @@ def load_model(model_name):
 
 # Available models dictionary (BERT and FNet style)
 available_models = {
-    "BERT (Fine-tuned on SST-2)": "M-FAC/bert-mini-finetuned-sst2",
-    "FNet-style (Bertweet sentiment)": "finiteautomata/bertweet-base-sentiment-analysis"
+    "BERT": "M-FAC/bert-mini-finetuned-sst2",
+    "FNet": "finiteautomata/bertweet-base-sentiment-analysis"
 }
 
 # Streamlit App Layout
